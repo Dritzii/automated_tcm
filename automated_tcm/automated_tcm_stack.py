@@ -17,7 +17,7 @@ class AutomatedTcmStack(Stack):
 
         s3_bucket_location = CfnParameter(self, "s3bucket_name", default="ato-dis-infra-build-pipeline-outputs-devtest")
         source_bucket = s3.Bucket.from_bucket_name(self, 'test-pipeline-src-bucket', s3_bucket_location.value_as_string)
-        BucketKeyParam = CfnParameter(self, "lambdazip", default="approval.zip")
+        bucket_key_param = CfnParameter(self, "lambdazip", default="approval.zip")
         kms_alias = CfnParameter(self, "kms_alias", default="alias/KMS-DIS-DockerImageBuilder")
 
         admin_role = CfnParameter(self, "admin_cb_role",
@@ -46,7 +46,7 @@ class AutomatedTcmStack(Stack):
         pipeline.add_stage(stage_name='Source', actions=[codepipeline_actions.S3SourceAction(
             action_name='S3Source',
             bucket=kms_bucket,
-            bucket_key=BucketKeyParam.value_as_string,
+            bucket_key=bucket_key_param.value_as_string,
             output=artifact,
             role=admin_role_arn,
             trigger=codepipeline_actions.S3Trigger.POLL)])
@@ -58,7 +58,7 @@ class AutomatedTcmStack(Stack):
                                                                      "codepipelinekmskeyalias",
                                                                      alias_name=kms_alias.value_as_string),
                                             project_name="dis-automated-tcm",
-                                            build_spec=codebuild.BuildSpec.from_source_filename(filename=""))
+                                            build_spec=codebuild.BuildSpec.from_source_filename(filename="/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/buildspec/buildspec.yml"))
 
         build_action = codepipeline_actions.CodeBuildAction(
             action_name="CodeBuild",

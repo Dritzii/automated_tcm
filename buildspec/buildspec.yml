@@ -1,0 +1,32 @@
+version: 0.2
+env:
+  variables:
+    S3_BUCKET: my-reports-bucket
+    TOPIC_ARN: arn:aws:sns:us-east-1:123456789012:mySNSTopic
+phases:
+  install:
+    runtime-versions:
+      dotnet: 6
+      commands:
+        - npm install -g typescript
+        - npm install
+        - bash -c "$(curl -fsSL https://raw.githubusercontent.com/thii/aws-codebuild-extras/master/install)"
+  build:
+    commands:
+      - echo "CD into source folder, because my source code is tidy"
+      - mkdir src | cd src
+      - echo "Restore, Build, then Publish.."
+      - dotnet restore
+      - dotnet build --no-restore
+      - dotnet publish --no-restore --output outputDirectory
+  post_build:
+    commands:
+      - echo "Compressing the package.."
+      - cd ../outputDirectory
+      - zip -r myBuild.zip .
+      - echo "Uploading to S3.."
+      - aws s3 cp myBuild.zip s3://${S3_BUCKET}/myBuild.zip
+      - echo "Done."
+artifacts:
+  files:
+    - 'DIS-mygovid-pfd-dashboard.yaml'
