@@ -3,11 +3,14 @@ env:
   variables:
     S3_BUCKET: my-reports-bucket
     TOPIC_ARN: arn:aws:sns:us-east-1:123456789012:mySNSTopic
+    GIT_REPO: example.com/git/pull
+    GIT_TEST: example commands to run | with piping
 phases:
   install:
     runtime-versions:
-      dotnet: 6
+      dotnet: 8
       commands:
+        - git clone ${GIT_REPO}
         - npm install -g typescript
         - npm install
         - bash -c "$(curl -fsSL https://raw.githubusercontent.com/thii/aws-codebuild-extras/master/install)"
@@ -19,6 +22,8 @@ phases:
       - dotnet restore
       - dotnet build --no-restore
       - dotnet publish --no-restore --output outputDirectory
+      - echo "Running dotnet cli and running tests"
+      - ${GIT_TEST}
   post_build:
     commands:
       - echo "Compressing the package.."
