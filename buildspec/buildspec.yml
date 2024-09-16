@@ -10,14 +10,11 @@ phases:
   install:
     runtime-versions:
       dotnet: ${DOTNETVER}
-      commands:
-        - git clone ${GIT_REPO}
-        - npm install -g typescript
-        - npm install
-        - bash -c "$(curl -fsSL https://raw.githubusercontent.com/thii/aws-codebuild-extras/master/install)"
   pre_build:
     commands:
-      - dotnet nuget add source -n codeartifact $(aws codeartifact get-repository-endpoint --domain my_domain --domain-owner 111122223333 --repository my_repo --format nuget --query repositoryEndpoint --output text)"v3/index.json"
+      - echo Restore started on `date`
+      - git clone ${GIT_REPO}
+      - dotnet restore test-api/test-api.csproj
   build:
     commands:
       - echo "CD into source folder, because my source code is tidy"
