@@ -17,12 +17,10 @@ class AutomatedTcmStack(Stack):
 
         s3_bucket_location = CfnParameter(self, "s3bucket_name", default="ato-dis-infra-build-pipeline-outputs-devtest")
         source_bucket = s3.Bucket.from_bucket_name(self, 'test-pipeline-src-bucket', s3_bucket_location.value_as_string)
-        bucket_key_param = CfnParameter(self, "lambdazip", default="approval.zip")
+        bucket_key_param = CfnParameter(self, "vssln.zip", default="vssln.zip")
         kms_alias = CfnParameter(self, "kms_alias", default="alias/KMS-DIS-DockerImageBuilder")
-
         admin_role = CfnParameter(self, "admin_cb_role",
                                   default="arn:aws:iam::830486629506:role/ato-role-dis-codesuite-admin")
-
         admin_role_arn = Role.from_role_arn(self, "ato-dis-cp-role", admin_role.value_as_string, mutable=False)
 
         kms_bucket = s3.Bucket.from_bucket_attributes(self,
@@ -31,7 +29,9 @@ class AutomatedTcmStack(Stack):
                                                       encryption_key=kms.Alias.from_alias_name(self,
                                                                                                id='kms-key-s3bucket',
                                                                                                alias_name=kms_alias.value_as_string))
+
         artifact = codepipeline.Artifact("buildspec_artifact")
+        tcm = codepipeline.Artifact("automated-tcm")
         # codepipeline
         pipeline = codepipeline.Pipeline(self, 'dis-automated_tcm-mygovid',
                                          pipeline_name='dis-mygov-automated-tcm',
@@ -64,10 +64,10 @@ class AutomatedTcmStack(Stack):
             action_name="CodeBuild",
             project=project,
             input=artifact,
-            #outputs=[codepipeline.Artifact("automated-tcm")],
+            outputs=[tcm],
             execute_batch_build=True,
             combine_batch_build_artifacts=True,
             type=codepipeline_actions.CodeBuildActionType.TEST
         )
 
-        pipeline.add_stage(stage_name='build', actions=[build_action])
+        pipeline.add_stage(stage_name='build_test', actions=[build_action])
