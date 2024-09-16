@@ -5,15 +5,19 @@ env:
     TOPIC_ARN: arn:aws:sns:us-east-1:123456789012:mySNSTopic
     GIT_REPO: example.com/git/pull
     GIT_TEST: example commands to run | with piping
+    DOTNETVER: latest
 phases:
   install:
     runtime-versions:
-      dotnet: 8
+      dotnet: ${DOTNETVER}
       commands:
         - git clone ${GIT_REPO}
         - npm install -g typescript
         - npm install
         - bash -c "$(curl -fsSL https://raw.githubusercontent.com/thii/aws-codebuild-extras/master/install)"
+  pre_build:
+    commands:
+      - dotnet nuget add source -n codeartifact $(aws codeartifact get-repository-endpoint --domain my_domain --domain-owner 111122223333 --repository my_repo --format nuget --query repositoryEndpoint --output text)"v3/index.json"
   build:
     commands:
       - echo "CD into source folder, because my source code is tidy"
@@ -35,3 +39,9 @@ phases:
 artifacts:
   files:
     - 'DIS-mygovid-pfd-dashboard.yaml'
+  reports:
+    DotnetTestExamples:
+      file-format: VisualStudioTrx
+      files:
+        - '**/*'
+      base-directory: './testresults'
