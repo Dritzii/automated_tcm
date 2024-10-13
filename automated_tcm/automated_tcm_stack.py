@@ -19,8 +19,7 @@ class AutomatedTcmStack(Stack):
         source_bucket = s3.Bucket.from_bucket_name(self, 'test-pipeline-src-bucket', s3_bucket_location.value_as_string)
         bucket_key_param = CfnParameter(self, "vssln.zip", default="vssln.zip")
         kms_alias = CfnParameter(self, "kms_alias", default="alias/KMS-DIS-DockerImageBuilder")
-        admin_role = CfnParameter(self, "admin_cb_role",
-                                  default="arn:aws:iam::830486629506:role/ato-role-dis-codesuite-admin")
+        admin_role = CfnParameter(self, "admin_cb_role")
         admin_role_arn = Role.from_role_arn(self, "ato-dis-cp-role", admin_role.value_as_string, mutable=False)
 
         kms_bucket = s3.Bucket.from_bucket_attributes(self,

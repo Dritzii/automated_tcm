@@ -6,11 +6,11 @@ env:
     GIT_REPO: example.com/git/pull
     SLN: test-api/test-api.csproj
     GIT_TEST: example commands to run | with piping
-    DOTNETVER: latest
+    DOTNETRDF: latest
 phases:
   install:
     runtime-versions:
-      dotnet: ${DOTNETVER}
+      dotnet: ${DOTNETRDF}
   pre_build:
     commands:
       - echo Restore started on `date`
@@ -33,6 +33,7 @@ phases:
 artifacts:
   files:
     - ./**/*
+  base-directory: 'dist'
   reports:
     DotnetTestExamples:
       file-format: VisualStudioTrx
