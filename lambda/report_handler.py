@@ -1,13 +1,12 @@
 import base64
 import json
 import os
-
+import urllib.request
+from urllib.error import URLError, HTTPError
+import ssl
 import boto3
 
 def handler(event, context):
-    import urllib.request
-    from urllib.error import URLError, HTTPError
-    import ssl
     ssl._create_default_https_context = ssl._create_unverified_context
     codepipeline = boto3.client('codepipeline')
     job_id = event['CodePipeline.job']['id']

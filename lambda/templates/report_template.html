@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head >
+    <link rel="icon" type="image/x-icon" href={{tabicon}} >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test IAC Closure Memo</title>
+
+<style>
+    h1{
+    text-align: center;
+    }
+    h2{
+    text-align: center;
+    }
+    h3{
+    text-align: center;
+    }
+    p{
+    text-align: center;
+    }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+
+  header {
+    background-color: #0078d4;
+    color: #ffffff;
+    padding: 15px;
+    text-align: center;
+  }
+
+  main {
+    padding: 20px;
+  }
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.collapsible:after {
+  content: '\002B';
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+  dl {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    dt {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    dt:last-child {
+      border-bottom: none;
+    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    max-width: 200px; /* Set a maximum width for the cells */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: #0078d4;
+    color: #ffffff;
+  }
+
+  footer {
+    background-color: #0078d4;
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  .graph {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+</head>
+<!-- {% if stack_costs_url %}
+<a href={{stack_costs_url}}><strong>Link to your stacks Cost Calculator</strong></a>
+{% endif %} -->
+<br>
+<br>
+<br>
+<body>
+{% include 'tcmheader.html' %}
+<br>
+<br>
+<br>
+{% include 'piechart.html' %}
+<br>
+<br>
+<br>
+{% include 'lambda_list.html' %}
+<br>
+<br>
+<br>
+{% include 'lambda_security.html' %}
+<br>
+<br>
+<br>
+<script>
+document.getElementById("json").innerHTML = JSON.stringify({{lambda_list.response}}, undefined, 2);
+
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    }
+  });
+}
+</script>
+</body>
+</html>
