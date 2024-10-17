@@ -39,10 +39,10 @@ class AutomatedTcmStack(Stack):
         SGobj = [aws_ec2.SecurityGroup.from_security_group_id(self, 'sg', security_group_id=canarysg.value_as_string)]
         Vpcobj = aws_ec2.Vpc.from_vpc_attributes(self, 'vpc', availability_zones=['ap-southeast-2a', 'ap-southeast-2b'],
                                                  vpc_id=vpcid.value_as_string)
-        Subnetobj = aws_ec2.SubnetSelection(subnets=[aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet0",
+        """Subnetobj = aws_ec2.SubnetSelection(subnets=[aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet0",
                                                                                    subnet.value_as_string.split()[0]),
                                                       aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet1",
-                                                                                   subnet.value_as_string.split()[1])])
+                                                                                   subnet.value_as_string.split()[1])])"""
         kms_bucket = s3.Bucket.from_bucket_attributes(self,
                                                       id="ato-dis-kms-bucket",
                                                       bucket_name=source_bucket.bucket_name,
