@@ -39,10 +39,10 @@ class AutomatedTcmStack(Stack):
         SGobj = [aws_ec2.SecurityGroup.from_security_group_id(self, 'sg', security_group_id=canarysg.value_as_string)]
         Vpcobj = aws_ec2.Vpc.from_vpc_attributes(self, 'vpc', availability_zones=['ap-southeast-2a', 'ap-southeast-2b'],
                                                  vpc_id=vpcid.value_as_string)
-        Subnetobj = aws_ec2.SubnetSelection(subnets=[aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet0",
-                                                                                   subnet.value_as_string.split()[0]),
-                                                     aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet1",
-                                                                                   subnet.value_as_string.split()[1])])
+        #Subnetobj = aws_ec2.SubnetSelection(subnets=[aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet0",
+        #                                                                           subnet.value_as_string.split()[0]),
+       #                                              aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet1",
+        #                                                                           subnet.value_as_string.split()[1])])
         kms_bucket = s3.Bucket.from_bucket_attributes(self,
                                                       id="ato-dis-kms-bucket",
                                                       bucket_name=source_bucket.bucket_name,
@@ -84,9 +84,9 @@ class AutomatedTcmStack(Stack):
                                                              memory_size=10240,
                                                              role=existing_role,
                                                              layers=[self.jinja_layer, self.matplot_lib_layer],
-                                                             vpc=Vpcobj,
-                                                             vpc_subnets=Subnetobj,
-                                                             security_groups=SGobj,
+                                                          #   vpc=Vpcobj,
+                                                            # vpc_subnets=Subnetobj,
+                                                          #   security_groups=SGobj,
                                                              )
 
         artifact = codepipeline.Artifact("buildspec_artifact")
@@ -130,7 +130,7 @@ class AutomatedTcmStack(Stack):
         )
 
         pipeline.add_stage(stage_name='build_test', actions=[build_action])
-        pipeline.add_stage(stage_name='build_test', actions=[
+        pipeline.add_stage(stage_name='build_report', actions=[
             codepipeline_actions.LambdaInvokeAction(
                 action_name="GenerateReport",
                 lambda_=TestFrameworkLambda_generate_html,
