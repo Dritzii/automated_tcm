@@ -8,7 +8,9 @@ from aws_cdk import (
     aws_lambda as _lambda,
     CfnParameter,
     Duration,
-    aws_ec2
+    aws_ec2,
+    aws_secretsmanager as secretsmanager,
+    SecretValue,
 )
 from aws_cdk.aws_iam import Role
 from constructs import Construct
@@ -64,7 +66,16 @@ class AutomatedTcmStack(Stack):
                                                                            _lambda.Runtime.PYTHON_3_10,
                                                                            _lambda.Runtime.PYTHON_3_9,
                                                                            _lambda.Runtime.PYTHON_3_8])
-
+        secretsmanager.Secret(self, "Secret",
+                              secret_object_value={
+                                  "S3_BUCKET": SecretValue.unsafe_plain_text("foo"),
+                                  "TOPIC_ARN": SecretValue.unsafe_plain_text("foo"),
+                                  "GIT_REPO": SecretValue.unsafe_plain_text("foo"),
+                                  "SLN": SecretValue.unsafe_plain_text("foo"),
+                                  "GIT_TEST": SecretValue.unsafe_plain_text("foo"),
+                                  "DOTNETRDF": SecretValue.unsafe_plain_text("foo"),
+                              }
+                              )
         # Lambda
         TestFrameworkLambda_generate_html = _lambda.Function(self, "ato-dis-generate_report",
                                                              runtime=_lambda.Runtime.PYTHON_3_11,
@@ -117,7 +128,7 @@ class AutomatedTcmStack(Stack):
                                                                      "codepipelinekmskeyalias",
                                                                      alias_name=kms_alias.value_as_string),
                                             project_name="dis-automated-tcm",
-                                            build_spec=codebuild.BuildSpec.from_source_filename(filename="/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/buildspec/buildspec.yml"))
+                                            build_spec=codebuild.BuildSpec.from_source_filename(filename="s3://aha-health-aware-ato-john/buildspec.yml"))
 
         build_action = codepipeline_actions.CodeBuildAction(
             action_name="CodeBuild",

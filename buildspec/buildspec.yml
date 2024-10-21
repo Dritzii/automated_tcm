@@ -1,12 +1,15 @@
 version: 0.2
 env:
-  variables:
+  secrets-manager:
     S3_BUCKET: my-reports-bucket
     TOPIC_ARN: arn:aws:sns:us-east-1:123456789012:mySNSTopic
     GIT_REPO: example.com/git/pull
     SLN: test-api/test-api.csproj
     GIT_TEST: example commands to run | with piping
     DOTNETRDF: latest
+  exported-variables:
+    - S3_BUCKET
+    - SLN
 phases:
   install:
     runtime-versions:
