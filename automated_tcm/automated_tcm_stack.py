@@ -140,7 +140,7 @@ class AutomatedTcmStack(Stack):
             type=codepipeline_actions.CodeBuildActionType.TEST
         )
 
-        #pipeline.add_stage(stage_name='build_test', actions=[build_action])
+        pipeline.add_stage(stage_name='build_test', actions=[build_action])
         #pipeline.add_stage(stage_name='build_report', actions=[
         #    codepipeline_actions.LambdaInvokeAction(
         #        action_name="GenerateReport",
