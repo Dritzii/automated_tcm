@@ -46,36 +46,36 @@ class AutomatedTcmStack(Stack):
                                                       aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet1",
                                                                                    subnet.value_as_string.split()[1])])"""
         kms_bucket = s3.Bucket.from_bucket_attributes(self,
-                                                      id="ato-dis-kms-bucket",
+                                                      id="dis-kms-bucket",
                                                       bucket_name=source_bucket.bucket_name,
                                                       encryption_key=kms.Alias.from_alias_name(self,
                                                                                                id='kms-key-s3bucket',
                                                                                                alias_name=kms_alias.value_as_string))
         # Layers
-        self.jinja_layer = _lambda.LayerVersion(self, "DIS-jinjaLayer",
-                                                code=_lambda.Code.from_bucket(bucket=kms_bucket,
-                                                                              key=jinja.value_as_string),
-                                                compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
-                                                                     _lambda.Runtime.PYTHON_3_10,
-                                                                     _lambda.Runtime.PYTHON_3_9,
-                                                                     _lambda.Runtime.PYTHON_3_8])
-        self.matplot_lib_layer = _lambda.LayerVersion(self, "DIS-matplotlibLayer",
-                                                      code=_lambda.Code.from_bucket(bucket=kms_bucket,
-                                                                                    key=matplotlib.value_as_string),
-                                                      compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
-                                                                           _lambda.Runtime.PYTHON_3_10,
-                                                                           _lambda.Runtime.PYTHON_3_9,
-                                                                           _lambda.Runtime.PYTHON_3_8])
-        secretsmanager.Secret(self, "Secret",
-                              secret_object_value={
-                                  "S3_BUCKET": SecretValue.unsafe_plain_text("foo"),
-                                  "TOPIC_ARN": SecretValue.unsafe_plain_text("foo"),
-                                  "GIT_REPO": SecretValue.unsafe_plain_text("foo"),
-                                  "SLN": SecretValue.unsafe_plain_text("foo"),
-                                  "GIT_TEST": SecretValue.unsafe_plain_text("foo"),
-                                  "DOTNETRDF": SecretValue.unsafe_plain_text("foo"),
-                              }
-                              )
+        #self.jinja_layer = _lambda.LayerVersion(self, "DIS-jinjaLayer",
+        #                                        code=_lambda.Code.from_bucket(bucket=kms_bucket,
+        #                                                                      key=jinja.value_as_string),
+        #                                        compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
+        #                                                             _lambda.Runtime.PYTHON_3_10,
+        #                                                             _lambda.Runtime.PYTHON_3_9,
+        #                                                             _lambda.Runtime.PYTHON_3_8])
+        #self.matplot_lib_layer = _lambda.LayerVersion(self, "DIS-matplotlibLayer",
+        #                                              code=_lambda.Code.from_bucket(bucket=kms_bucket,
+        #                                                                            key=matplotlib.value_as_string),
+        #                                              compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
+        #                                                                   _lambda.Runtime.PYTHON_3_10,
+        #                                                                   _lambda.Runtime.PYTHON_3_9,
+        #                                                                   _lambda.Runtime.PYTHON_3_8])
+        #secretsmanager.Secret(self, "Secret",
+        #                      secret_object_value={
+        #                          "S3_BUCKET": SecretValue.unsafe_plain_text("foo"),
+        #                          "TOPIC_ARN": SecretValue.unsafe_plain_text("foo"),
+        #                          "GIT_REPO": SecretValue.unsafe_plain_text("foo"),
+        #                          "SLN": SecretValue.unsafe_plain_text("foo"),
+        #                          "GIT_TEST": SecretValue.unsafe_plain_text("foo"),
+        #                          "DOTNETRDF": SecretValue.unsafe_plain_text("foo"),
+        #                      }
+        #                      )
         # Lambda
         TestFrameworkLambda_generate_html = _lambda.Function(self, "ato-dis-generate_report",
                                                              runtime=_lambda.Runtime.PYTHON_3_11,
@@ -94,7 +94,7 @@ class AutomatedTcmStack(Stack):
                                                              timeout=Duration.minutes(10),
                                                              memory_size=10240,
                                                              role=existing_role,
-                                                             layers=[self.jinja_layer, self.matplot_lib_layer],
+                                                            # layers=[self.jinja_layer, self.matplot_lib_layer],
                                                           #   vpc=Vpcobj,
                                                             # vpc_subnets=Subnetobj,
                                                           #   security_groups=SGobj,
