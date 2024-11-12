@@ -135,9 +135,10 @@ class AutomatedTcmStack(Stack):
             project=project,
             input=artifact,
             outputs=[tcm],
-            execute_batch_build=True,
-            combine_batch_build_artifacts=True,
-            type=codepipeline_actions.CodeBuildActionType.TEST
+            execute_batch_build=False,
+            combine_batch_build_artifacts=False,
+            type=codepipeline_actions.CodeBuildActionType.TEST,
+            role=admin_role_arn
         )
 
         pipeline.add_stage(stage_name='build_test', actions=[build_action])
