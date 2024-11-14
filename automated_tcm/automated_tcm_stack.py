@@ -142,10 +142,10 @@ class AutomatedTcmStack(Stack):
         )
 
         pipeline.add_stage(stage_name='build_test', actions=[build_action])
-        #pipeline.add_stage(stage_name='build_report', actions=[
-        #    codepipeline_actions.LambdaInvokeAction(
-        #        action_name="GenerateReport",
-        #        lambda_=TestFrameworkLambda_generate_html,
-        #        role=admin_role_arn,
-        #        run_order=1,
-        #    ),])
+        pipeline.add_stage(stage_name='build_report', actions=[
+            codepipeline_actions.LambdaInvokeAction(
+                action_name="GenerateReport",
+                lambda_=TestFrameworkLambda_generate_html,
+                role=admin_role_arn,
+                run_order=1,
+            ),])
