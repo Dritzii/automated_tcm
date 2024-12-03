@@ -122,26 +122,26 @@ class AutomatedTcmStack(Stack):
             trigger=codepipeline_actions.S3Trigger.POLL)])
 
         # init a cb project , we add the details here for the buildspec
-        project = codebuild.PipelineProject(self, "DIS-automated-TCM",
-                                            role=admin_role_arn,
-                                            encryption_key=kms.Alias.from_alias_name(self,
-                                                                     "codepipelinekmskeyalias",
-                                                                     alias_name=kms_alias.value_as_string),
-                                            project_name="dis-automated-tcm",
-                                            build_spec=codebuild.BuildSpec.from_source_filename(filename="s3://aha-health-aware-ato-john/buildspec.yml"))
+       # project = codebuild.PipelineProject(self, "DIS-automated-TCM",
+       #                                     role=admin_role_arn,
+       #                                     encryption_key=kms.Alias.from_alias_name(self,
+       #                                                              "codepipelinekmskeyalias",
+       #                                                              alias_name=kms_alias.value_as_string),
+       #                                     project_name="dis-automated-tcm",
+       #                                     build_spec=codebuild.BuildSpec.from_source_filename(filename="s3://aha-health-aware-ato-john/buildspec.yml"))
 
-        build_action = codepipeline_actions.CodeBuildAction(
-            action_name="CodeBuild",
-            project=project,
-            input=artifact,
-            outputs=[tcm],
-            execute_batch_build=False,
-            combine_batch_build_artifacts=False,
-            type=codepipeline_actions.CodeBuildActionType.TEST,
-            role=admin_role_arn
-        )
+        #build_action = codepipeline_actions.CodeBuildAction(
+        #    action_name="CodeBuild",
+        #    project=project,
+        #    input=artifact,
+        #    outputs=[tcm],
+        #    execute_batch_build=False,
+        #    combine_batch_build_artifacts=False,
+        #    type=codepipeline_actions.CodeBuildActionType.TEST,
+        #    role=admin_role_arn
+        #)
 
-        pipeline.add_stage(stage_name='build_test', actions=[build_action])
+        #pipeline.add_stage(stage_name='build_test', actions=[build_action])
         pipeline.add_stage(stage_name='build_report', actions=[
             codepipeline_actions.LambdaInvokeAction(
                 action_name="GenerateReport",
