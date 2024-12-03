@@ -1,0 +1,263 @@
+Parameters:
+  s3bucketname:
+    Type: String
+    Default: ato-dis-infra-build-pipeline-outputs-devtest
+  vsslnzip:
+    Type: String
+    Default: vssln.zip
+  kmsalias:
+    Type: String
+    Default: alias/KMS-DIS-DockerImageBuilder
+  lambdarole:
+    Type: String
+    Default: arn:aws:iam::830486629506:role/ato-role-dis-testiac-lambda
+  admincbrole:
+    Type: String
+  jinja:
+    Type: String
+    Default: jinja.zip
+  matplotlib:
+    Type: String
+    Default: matplotlib.zip
+  s3bucketnamereports:
+    Type: String
+    Default: ato-dis-infra-build-pipeline-outputs-devtest
+  lambdazip:
+    Type: String
+    Default: approval.zip
+  subnetlist:
+    Type: String
+    Default: "['subnet-0fb54d79' , 'subnet-0c03b384cc7d98682']"
+  vpc6bcfd80e:
+    Type: String
+  sg0932df5016b614b95:
+    Type: String
+Resources:
+  DISjinjaLayerB9F22501:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.11
+        - python3.10
+        - python3.9
+        - python3.8
+      Content:
+        S3Bucket:
+          Ref: s3bucketname
+        S3Key:
+          Ref: jinja
+    Metadata:
+      aws:cdk:path: AutomatedTcmStack/DIS-jinjaLayer/Resource
+  DISmatplotlibLayer1D090851:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.11
+        - python3.10
+        - python3.9
+        - python3.8
+      Content:
+        S3Bucket:
+          Ref: s3bucketname
+        S3Key:
+          Ref: matplotlib
+    Metadata:
+      aws:cdk:path: AutomatedTcmStack/DIS-matplotlibLayer/Resource
+  atodisgeneratereport67672E44:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: s3bucketname
+        S3Key:
+          Ref: lambdazip
+      Environment:
+        Variables:
+          s3_bucket:
+            Ref: s3bucketname
+          s3_bucket_reports:
+            Ref: s3bucketnamereports
+          config: config.json
+          ARTIFACTORY_SVC_USER: udfh8
+          ARTIFACTORY_SVC_USER_TOKEN: cmVmdGtuOjAxOjE3NTAxMjY4NDY6S2M2RUZzTkx5TndsZUN1azR1cms0TlpIeU0x
+          ARTIFACTORY_ENDPOINT: https://artifactory.ctz.atocnet.gov.au
+          ARTIFACTORY_REPO_STORAGE_PATH: /artifactory/disolution-generic-release-local/AWS/Reports/
+      Handler: report_handler.handler
+      Layers:
+        - Ref: DISjinjaLayerB9F22501
+        - Ref: DISmatplotlibLayer1D090851
+      MemorySize: 10240
+      Role:
+        Ref: lambdarole
+      Runtime: python3.11
+      Timeout: 600
+    Metadata:
+      aws:cdk:path: AutomatedTcmStack/ato-dis-generate_report/Resource
+  disautomatedtcmmygovid65352089:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        EncryptionKey:
+          Id:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":kms:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: kmsalias
+          Type: KMS
+        Location:
+          Ref: s3bucketname
+        Type: S3
+      Name: dis-mygov-automated-tcm
+      PipelineType: V2
+      RestartExecutionOnUpdate: false
+      RoleArn:
+        Ref: admincbrole
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: s3bucketname
+                S3ObjectKey:
+                  Ref: vsslnzip
+                PollForSourceChanges: true
+              Name: S3Source
+              OutputArtifacts:
+                - Name: buildspec_artifact
+              RoleArn:
+                Ref: admincbrole
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Provider: Lambda
+                Version: "1"
+              Configuration:
+                FunctionName:
+                  Ref: atodisgeneratereport67672E44
+              Name: GenerateReport
+              RoleArn:
+                Ref: admincbrole
+              RunOrder: 1
+          Name: build_report
+    Metadata:
+      aws:cdk:path: AutomatedTcmStack/dis-automated_tcm-mygovid/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/1WNTQuCQBCGf4v3dUpFuit06iAGXWPcnWhSd2U/CBH/e6UGdXqfdx5mJoUkz2Ef4dPFUrVxxw1MZ4+yFeVNV2ixJ09WvP11chkUQbbkC3QkOuwbhTCdcCR7IevY6M/SXz8GLf0mvjwLaRQNPFDHmmCqNlo+bjzPoiZngpXL+JdLoxWvd6rR343eZZCkcIgejjm2QXvuCeo1X0QBqvjgAAAA
+    Metadata:
+      aws:cdk:path: AutomatedTcmStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-3
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-4
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-2
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - il-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+      - Fn::Equals:
+          - Ref: AWS::Region
+          - us-west-2
+
