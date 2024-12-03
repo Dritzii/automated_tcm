@@ -52,20 +52,20 @@ class AutomatedTcmStack(Stack):
                                                                                                id='kms-key-s3bucket',
                                                                                                alias_name=kms_alias.value_as_string))
         # Layers
-        self.jinja_layer = _lambda.LayerVersion(self, "DIS-jinjaLayer",
-                                                code=_lambda.Code.from_bucket(bucket=kms_bucket,
-                                                                              key=jinja.value_as_string),
-                                                compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
-                                                                     _lambda.Runtime.PYTHON_3_10,
-                                                                     _lambda.Runtime.PYTHON_3_9,
-                                                                     _lambda.Runtime.PYTHON_3_8])
-        self.matplot_lib_layer = _lambda.LayerVersion(self, "DIS-matplotlibLayer",
-                                                      code=_lambda.Code.from_bucket(bucket=kms_bucket,
-                                                                                    key=matplotlib.value_as_string),
-                                                      compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
-                                                                           _lambda.Runtime.PYTHON_3_10,
-                                                                           _lambda.Runtime.PYTHON_3_9,
-                                                                           _lambda.Runtime.PYTHON_3_8])
+        #self.jinja_layer = _lambda.LayerVersion(self, "DIS-jinjaLayer",
+        #                                        code=_lambda.Code.from_bucket(bucket=kms_bucket,
+        #                                                                      key=jinja.value_as_string),
+        #                                        compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
+        #                                                             _lambda.Runtime.PYTHON_3_10,
+        #                                                             _lambda.Runtime.PYTHON_3_9,
+        #                                                             _lambda.Runtime.PYTHON_3_8])
+        #self.matplot_lib_layer = _lambda.LayerVersion(self, "DIS-matplotlibLayer",
+        #                                              code=_lambda.Code.from_bucket(bucket=kms_bucket,
+        #                                                                            key=matplotlib.value_as_string),
+        #                                              compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
+        #                                                                   _lambda.Runtime.PYTHON_3_10,
+        #                                                                   _lambda.Runtime.PYTHON_3_9,
+        #                                                                   _lambda.Runtime.PYTHON_3_8])
         #secretsmanager.Secret(self, "Secret",
         #                      secret_object_value={
         #                          "S3_BUCKET": SecretValue.unsafe_plain_text("foo"),
@@ -94,7 +94,7 @@ class AutomatedTcmStack(Stack):
                                                              timeout=Duration.minutes(10),
                                                              memory_size=10240,
                                                              role=existing_role,
-                                                             layers=[self.jinja_layer, self.matplot_lib_layer],
+                                                            # layers=[self.jinja_layer, self.matplot_lib_layer],
                                                           #   vpc=Vpcobj,
                                                             # vpc_subnets=Subnetobj,
                                                           #   security_groups=SGobj,
