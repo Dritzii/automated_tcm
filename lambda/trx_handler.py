@@ -34,6 +34,7 @@ def parse_trx(file_path):
     for result in root.findall(".//UnitTestResult"):
         test_results.append({
             "TestID": result.attrib.get("testId"),
+            "testName": result.attrib.get("testName"),
             "Outcome": result.attrib.get("outcome"),
             "Duration": result.attrib.get("duration"),
             "StartTime": result.attrib.get("startTime"),
@@ -74,21 +75,17 @@ def parse_trx(file_path):
 
     return trx_data
 
-def trx_to_json(file_path, output_path) -> dict:
+def trx_to_json(file_path, output_path="none") -> dict:
     # Parse the file and output JSON
     parsed_data = parse_trx(file_path)
 
     # Convert to JSON string for saving or further use
     json_output = json.dumps(parsed_data, indent=4)
 
-    # Save JSON to a file (optional)
-    with open(output_path, "w") as json_file:
-        output = json_file.write(json_output)
+    #Save JSON to a file (optional)
+    #with open(output_path, "w") as json_file:
+    #    output = json_file.write(json_output)
+    #print(json_output)
+    return json_output
 
-    return output
-
-
-
-def handler():
-    json_file = trx_to_json()
-    put_file_contents()
+#trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")

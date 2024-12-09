@@ -8,24 +8,24 @@ from urllib.error import URLError, HTTPError
 import ssl
 
 from logic_handler import (get_file_context, put_file_contents, datetime_int, render_docx_template)
-from trx_handler import handler as trx_handler
+from trx_handler import trx_to_json
 
 def handler(event, context):
     ssl._create_default_https_context = ssl._create_unverified_context
     codepipeline = boto3.client('codepipeline')
     job_id = event['CodePipeline.job']['id']
-    data = get_file_context()
-    file_content = json.loads(data)
+    file_content = get_file_context()
+    trx_json = trx_to_json(file_content)
     # we should do our calculations and stuff before we render below this
-    html_str = render_docx_template(file_content)
-    report_name = 'mygovid_automated_tcm' + str(datetime_int()) + '.html'
-    put_file_contents(html_str, report_name)
+    docx = render_docx_template(trx_json)
+    report_name = 'myID_SS_' + str(datetime_int()) + '.docx'
+    put_file_contents(docx, report_name)
     # Encode the username and password
     credentials = f"{os.environ['ARTIFACTORY_SVC_USER']}:{os.environ['ARTIFACTORY_SVC_USER_TOKEN']}"
     encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
     request = urllib.request.Request(
         os.environ['ARTIFACTORY_ENDPOINT'] + os.environ['ARTIFACTORY_REPO_STORAGE_PATH'] + report_name,
-        data=str.encode(html_str),
+        data=str.encode(docx),
         method='PUT')
     request.add_header('Authorization', f'Basic {encoded_credentials}')
     try:

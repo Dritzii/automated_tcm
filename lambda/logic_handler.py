@@ -3,8 +3,6 @@ import io
 import json
 import os
 
-import boto3
-
 
 def render_docx_template(context):
     from docxtpl import DocxTemplate
@@ -13,13 +11,15 @@ def render_docx_template(context):
     doc.save("generated_doc.docx")
 
 def get_file_contents() -> dict:
+    import boto3
     s3bucket = boto3.client('s3')
     response = s3bucket.get_object(Bucket=os.environ['s3_bucket'], Key=os.environ['lambda_config'])
     file_content = response['Body'].read().decode('utf-8')
     return file_content
 
 
-def get_file_context(Key="ss_test_run.json") -> dict:
+def get_file_context(Key="ss_test_run.trx") -> dict:
+    import boto3
     s3bucket = boto3.client('s3')
     response = s3bucket.get_object(Bucket=os.environ['s3_bucket'], Key=Key)
     file_content = response['Body'].read().decode('utf-8')
