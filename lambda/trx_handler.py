@@ -3,7 +3,7 @@ import json
 import os
 
 import boto3
-
+from logic_handler import put_file_contents
 import xml.etree.ElementTree as ET
 import json
 
@@ -66,23 +66,21 @@ def parse_trx(file_path):
 
     return trx_data
 
-# Path to the .trx file
-file_path = "/mnt/data/SS_FT__DTD__3.1.62.8__2024120608350212.trx"
+def trx_to_json(file_path, output_path) -> dict:
+    # Parse the file and output JSON
+    parsed_data = parse_trx(file_path)
 
-# Parse the file and output JSON
-parsed_data = parse_trx(file_path)
+    # Convert to JSON string for saving or further use
+    json_output = json.dumps(parsed_data, indent=4)
 
-# Convert to JSON string for saving or further use
-json_output = json.dumps(parsed_data, indent=4)
+    # Save JSON to a file (optional)
+    with open(output_path, "w") as json_file:
+        output = json_file.write(json_output)
 
-# Save JSON to a file (optional)
-output_path = "/mnt/data/parsed_trx.json"
-with open(output_path, "w") as json_file:
-    json_file.write(json_output)
-
-print("Parsing completed. JSON data saved to:", output_path)
+    return output
 
 
 
 def handler(event, context):
-    pass
+    json_file = trx_to_json()
+    put_file_contents()

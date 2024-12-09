@@ -7,7 +7,7 @@ import urllib.request
 from urllib.error import URLError, HTTPError
 import ssl
 
-from logic_handler import (render_html_template, get_file_context, put_file_contents, datetime_int)
+from logic_handler import (get_file_context, put_file_contents, datetime_int, render_docx_template)
 
 def handler(event, context):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -16,7 +16,7 @@ def handler(event, context):
     data = get_file_context()
     file_content = json.loads(data)
     # we should do our calculations and stuff before we render below this
-    html_str = render_html_template(file_content)
+    html_str = render_docx_template(file_content)
     report_name = 'mygovid_automated_tcm' + str(datetime_int()) + '.html'
     put_file_contents(html_str, report_name)
     # Encode the username and password
