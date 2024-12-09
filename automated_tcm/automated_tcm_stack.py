@@ -32,6 +32,7 @@ class AutomatedTcmStack(Stack):
         admin_role_arn = Role.from_role_arn(self, "ato-dis-cp-role", admin_role.value_as_string, mutable=False)
         jinja = CfnParameter(self, "jinja", default="jinja.zip")
         matplotlib = CfnParameter(self, "matplotlib", default="matplotlib.zip")
+        docplx = CfnParameter(self, "docplx", default="docplx.zip")
         s3_bucket_location_reports = CfnParameter(self, "s3bucket_name_reports",
                                                   default="ato-dis-infra-build-pipeline-outputs-devtest")
         zip_code = CfnParameter(self, "lambdazip", default="approval.zip")
@@ -66,6 +67,13 @@ class AutomatedTcmStack(Stack):
         #                                                                   _lambda.Runtime.PYTHON_3_10,
         #                                                                   _lambda.Runtime.PYTHON_3_9,
         #                                                                   _lambda.Runtime.PYTHON_3_8])
+        # self.docplx = _lambda.LayerVersion(self, "DIS-docplxLayer",
+        #                                              code=_lambda.Code.from_bucket(bucket=kms_bucket,
+        #                                                                            key=docplx.value_as_string),
+        #                                              compatible_runtimes=[_lambda.Runtime.PYTHON_3_11,
+        #                                                                   _lambda.Runtime.PYTHON_3_10,
+        #                                                                   _lambda.Runtime.PYTHON_3_9,
+        #                                                                   _lambda.Runtime.PYTHON_3_8])
         #secretsmanager.Secret(self, "Secret",
         #                      secret_object_value={
         #                          "S3_BUCKET": SecretValue.unsafe_plain_text("foo"),
@@ -94,7 +102,7 @@ class AutomatedTcmStack(Stack):
                                                              timeout=Duration.minutes(10),
                                                              memory_size=10240,
                                                              role=existing_role,
-                                                            # layers=[self.jinja_layer, self.matplot_lib_layer],
+                                                            # layers=[self.jinja_layer, self.matplot_lib_layer, self.docplx],
                                                           #   vpc=Vpcobj,
                                                             # vpc_subnets=Subnetobj,
                                                           #   security_groups=SGobj,

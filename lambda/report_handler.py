@@ -8,6 +8,7 @@ from urllib.error import URLError, HTTPError
 import ssl
 
 from logic_handler import (get_file_context, put_file_contents, datetime_int, render_docx_template)
+from trx_handler import handler as trx_handler
 
 def handler(event, context):
     ssl._create_default_https_context = ssl._create_unverified_context

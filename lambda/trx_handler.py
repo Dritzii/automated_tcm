@@ -1,8 +1,4 @@
-import base64
-import json
-import os
-
-import boto3
+import re
 from logic_handler import put_file_contents
 import xml.etree.ElementTree as ET
 import json
@@ -14,6 +10,15 @@ def strip_namespace(root):
         if '}' in elem.tag:
             elem.tag = elem.tag.split('}', 1)[1]  # Strip namespace
     return root
+
+def extract_integer(name):
+    """Extracts the first integer from a string if it has 5-7 digits, returns None otherwise."""
+    match = re.search(r'\d+', name)  # Find the first sequence of digits
+    if match:
+        number = int(match.group())
+        if 10000 <= number <= 9999999:  # Ensure it's between 5 and 7 digits
+            return number
+    return None
 
 # Function to parse the .trx file
 def parse_trx(file_path):
@@ -39,11 +44,14 @@ def parse_trx(file_path):
     # Extract Test Definitions
     test_definitions = []
     for definition in root.findall(".//UnitTest"):
+        name = definition.attrib.get("name")
         test_definitions.append({
             "ID": definition.attrib.get("id"),
-            "Name": definition.attrib.get("name"),
+            "Name": name,
+            "HasIntegers": extract_integer(name),  # Extract the integer (if any)
             "Storage": definition.attrib.get("storage"),
-            "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find("TestMethod") is not None else None
+            "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find(
+                "TestMethod") is not None else None
         })
 
     # Extract Result Summary
@@ -81,6 +89,6 @@ def trx_to_json(file_path, output_path) -> dict:
 
 
 
-def handler(event, context):
+def handler():
     json_file = trx_to_json()
     put_file_contents()
