@@ -15,7 +15,8 @@ def handler(event, context):
     codepipeline = boto3.client('codepipeline')
     job_id = event['CodePipeline.job']['id']
     file_content = get_file_context()
-    trx_json = trx_to_json(file_content)
+    trx_dict = trx_to_json(file_content)
+    trx_json = json.loads(trx_dict)
     # we should do our calculations and stuff before we render below this
     docx = render_docx_template(trx_json)
     report_name = 'myID_SS_' + str(datetime_int()) + '.docx'

@@ -6,7 +6,7 @@ import os
 
 def render_docx_template(context):
     from docxtpl import DocxTemplate
-    doc = DocxTemplate("my_word_template.docx")
+    doc = DocxTemplate("/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
     doc.render(context)
     doc.save("generated_doc.docx")
 

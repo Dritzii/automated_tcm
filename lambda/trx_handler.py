@@ -17,8 +17,8 @@ def extract_integer(name):
     if match:
         number = int(match.group())
         if 10000 <= number <= 9999999:  # Ensure it's between 5 and 7 digits
-            return number
-    return None
+            return int(number)
+    return "not_found"
 
 # Function to parse the .trx file
 def parse_trx(file_path):
@@ -70,7 +70,17 @@ def parse_trx(file_path):
     trx_data = {
         "TestResults": test_results,
         "TestDefinitions": test_definitions,
-        "ResultSummary": result_summary
+        "ResultSummary": result_summary,
+        "BackendFunctionalTesting" : {
+            "ComponentName": "SS",
+            "suiteLink": "N/A",
+            "Status": "Conditional",
+        },
+        "tcsSummary" : {
+            "PhaseName" : "System Services Functional Testing",
+            "Environment" : "DTS",
+            "Notes" : "System Services components. System Services has no external dependencies."
+        }
     }
 
     return trx_data
@@ -88,4 +98,9 @@ def trx_to_json(file_path, output_path="none") -> dict:
     #print(json_output)
     return json_output
 
-#trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
+"""context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
+from docxtpl import DocxTemplate
+doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
+load_context = json.loads(context)
+doc.render(load_context)
+doc.save("generated_doc1.docx")"""
