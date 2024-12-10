@@ -1,7 +1,7 @@
 import re
-from logic_handler import put_file_contents
 import xml.etree.ElementTree as ET
 import json
+from docxtpl import DocxTemplate, RichText
 
 # Function to strip namespaces
 def strip_namespace(root):
@@ -22,6 +22,7 @@ def extract_integer(name):
 
 # Function to parse the .trx file
 def parse_trx(file_path):
+    rt = RichText()
     # Parse the XML content
     tree = ET.parse(file_path)
     root = tree.getroot()
@@ -80,7 +81,7 @@ def parse_trx(file_path):
             "PhaseName" : "System Services Functional Testing",
             "Environment" : "DTS",
             "Notes" : "System Services components. System Services has no external dependencies."
-        }
+        },
     }
 
     return trx_data
@@ -95,12 +96,11 @@ def trx_to_json(file_path, output_path="none") -> dict:
     #Save JSON to a file (optional)
     #with open(output_path, "w") as json_file:
     #    output = json_file.write(json_output)
-    #print(json_output)
+    print(json_output)
     return json_output
 
-"""context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
-from docxtpl import DocxTemplate
-doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
-load_context = json.loads(context)
-doc.render(load_context)
-doc.save("generated_doc1.docx")"""
+context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
+#doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
+#load_context = json.loads(context)
+#doc.render(load_context)
+#doc.save("generated_doc1.docx")
