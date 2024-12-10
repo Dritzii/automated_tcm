@@ -14,8 +14,16 @@ def strip_namespace(root):
 def extract_integer(name):
     """Extracts the first integer from a string if it has 5-7 digits, returns None otherwise."""
     match = re.search(r'\d+', name)  # Find the first sequence of digits
+    print(match)
     if match:
         number = int(match.group())
+        print(number)
+        try:
+            print(int(match.group(1)))
+        except:
+            if 10000 <= number <= 9999999:  # Ensure it's between 5 and 7 digits
+                return int(number)
+        #print(''.join(c for c in name if c.isdigit()))
         if 10000 <= number <= 9999999:  # Ensure it's between 5 and 7 digits
             return int(number)
     return "not_found"
@@ -97,10 +105,10 @@ def trx_to_json(file_path, output_path="none") -> dict:
     #Save JSON to a file (optional)
     #with open(output_path, "w") as json_file:
     #    output = json_file.write(json_output)
-    #print(json_output)
+    print(json_output)
     return json_output
 
-#context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
+context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
 #doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
 #load_context = json.loads(context)
 #doc.render(load_context)
