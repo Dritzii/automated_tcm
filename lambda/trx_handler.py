@@ -36,6 +36,7 @@ def parse_trx(file_path):
         test_results.append({
             "TestID": result.attrib.get("testId"),
             "testName": result.attrib.get("testName"),
+            "pbiID" : extract_integer(result.attrib.get("testName")),
             "Outcome": result.attrib.get("outcome"),
             "Duration": result.attrib.get("duration"),
             "StartTime": result.attrib.get("startTime"),
@@ -96,10 +97,10 @@ def trx_to_json(file_path, output_path="none") -> dict:
     #Save JSON to a file (optional)
     #with open(output_path, "w") as json_file:
     #    output = json_file.write(json_output)
-    print(json_output)
+    #print(json_output)
     return json_output
 
-context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
+#context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
 #doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
 #load_context = json.loads(context)
 #doc.render(load_context)
