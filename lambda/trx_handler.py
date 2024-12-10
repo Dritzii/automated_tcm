@@ -13,7 +13,7 @@ def strip_namespace(root):
 
 def extract_integer(name):
     match = re.findall(r'\d+', name)
-    return max(match)
+    return int(max(match))
 
 # Function to parse the .trx file
 def parse_trx(file_path):
