@@ -19,6 +19,9 @@ Parameters:
   matplotlib:
     Type: String
     Default: matplotlib.zip
+  docplx:
+    Type: String
+    Default: docplx.zip
   s3bucketnamereports:
     Type: String
     Default: ato-dis-infra-build-pipeline-outputs-devtest
@@ -33,36 +36,6 @@ Parameters:
   sg0932df5016b614b95:
     Type: String
 Resources:
-  DISjinjaLayerB9F22501:
-    Type: AWS::Lambda::LayerVersion
-    Properties:
-      CompatibleRuntimes:
-        - python3.11
-        - python3.10
-        - python3.9
-        - python3.8
-      Content:
-        S3Bucket:
-          Ref: s3bucketname
-        S3Key:
-          Ref: jinja
-    Metadata:
-      aws:cdk:path: AutomatedTcmStack/DIS-jinjaLayer/Resource
-  DISmatplotlibLayer1D090851:
-    Type: AWS::Lambda::LayerVersion
-    Properties:
-      CompatibleRuntimes:
-        - python3.11
-        - python3.10
-        - python3.9
-        - python3.8
-      Content:
-        S3Bucket:
-          Ref: s3bucketname
-        S3Key:
-          Ref: matplotlib
-    Metadata:
-      aws:cdk:path: AutomatedTcmStack/DIS-matplotlibLayer/Resource
   atodisgeneratereport67672E44:
     Type: AWS::Lambda::Function
     Properties:
@@ -83,9 +56,6 @@ Resources:
           ARTIFACTORY_ENDPOINT: https://artifactory.ctz.atocnet.gov.au
           ARTIFACTORY_REPO_STORAGE_PATH: /artifactory/disolution-generic-release-local/AWS/Reports/
       Handler: report_handler.handler
-      Layers:
-        - Ref: DISjinjaLayerB9F22501
-        - Ref: DISmatplotlibLayer1D090851
       MemorySize: 10240
       Role:
         Ref: lambdarole
@@ -140,24 +110,6 @@ Resources:
           Name: Source
         - Actions:
             - ActionTypeId:
-                Category: Test
-                Owner: AWS
-                Provider: CodeBuild
-                Version: "1"
-              Configuration:
-                ProjectName:
-                  Ref: DISautomatedTCM47EA922F
-              InputArtifacts:
-                - Name: buildspec_artifact
-              Name: CodeBuild
-              OutputArtifacts:
-                - Name: automated-tcm
-              RoleArn:
-                Ref: admincbrole
-              RunOrder: 1
-          Name: build_test
-        - Actions:
-            - ActionTypeId:
                 Category: Invoke
                 Owner: AWS
                 Provider: Lambda
@@ -172,36 +124,110 @@ Resources:
           Name: build_report
     Metadata:
       aws:cdk:path: AutomatedTcmStack/dis-automated_tcm-mygovid/Resource
-  DISautomatedTCM47EA922F:
-    Type: AWS::CodeBuild::Project
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
     Properties:
-      Artifacts:
-        Type: CODEPIPELINE
-      Cache:
-        Type: NO_CACHE
-      EncryptionKey:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":kms:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: kmsalias
-      Environment:
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/standard:1.0
-        ImagePullCredentialsType: CODEBUILD
-        PrivilegedMode: false
-        Type: LINUX_CONTAINER
-      Name: dis-automated-tcm
-      ServiceRole:
-        Ref: admincbrole
-      Source:
-        BuildSpec: s3://aha-health-aware-ato-john/buildspec.yml
-        Type: CODEPIPELINE
+      Analytics: v2:deflate64:H4sIAAAAAAAA/02MzQqDMBCEn8V73FZFelfoWewDlDXZ0q2aSH4oJeTd26qFnuZjhvlKKOoajhk+XS7VmE88QLx4lKNob7pDizN5suKzX6OroAlyJN+gIzHhPCiEeA5aejb6e/hxEtIoWnihiTVB7HZapTunJHpyJli51v/cGq1483Qvfzf6UEFRwil7OObcBu15Jui3fAPQ9xXlwwAAAA==
     Metadata:
-      aws:cdk:path: AutomatedTcmStack/DIS-automated-TCM/Resource
+      aws:cdk:path: AutomatedTcmStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-3
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-4
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-2
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - il-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+      - Fn::Equals:
+          - Ref: AWS::Region
+          - us-west-2
 
