@@ -12,21 +12,8 @@ def strip_namespace(root):
     return root
 
 def extract_integer(name):
-    """Extracts the first integer from a string if it has 5-7 digits, returns None otherwise."""
-    match = re.search(r'\d+', name)  # Find the first sequence of digits
-    print(match)
-    if match:
-        number = int(match.group())
-        print(number)
-        try:
-            print(int(match.group(1)))
-        except:
-            if 10000 <= number <= 9999999:  # Ensure it's between 5 and 7 digits
-                return int(number)
-        #print(''.join(c for c in name if c.isdigit()))
-        if 10000 <= number <= 9999999:  # Ensure it's between 5 and 7 digits
-            return int(number)
-    return "not_found"
+    match = re.findall(r'\d+', name)
+    return max(match)
 
 # Function to parse the .trx file
 def parse_trx(file_path):
