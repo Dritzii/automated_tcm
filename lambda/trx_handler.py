@@ -1,3 +1,4 @@
+import io
 import re
 import xml.etree.ElementTree as ET
 import json
@@ -96,7 +97,12 @@ def trx_to_json(file_path, output_path="none") -> dict:
     return json_output
 
 context = trx_to_json("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/SS_FT__DTD__3.1.62.8__2024120608350212.trx", "/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/json.json")
-#doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
-#load_context = json.loads(context)
-#doc.render(load_context)
-#doc.save("generated_doc1.docx")
+doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
+load_context = json.loads(context)
+doc.render(load_context)
+s_buf = io.BytesIO()
+doc.save(s_buf)
+s_buf.seek(0)
+data = s_buf.read()
+print(data)
+s_buf.close()
