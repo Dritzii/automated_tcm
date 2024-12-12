@@ -26,7 +26,7 @@ def handler(event, context):
     encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
     request = urllib.request.Request(
         os.environ['ARTIFACTORY_ENDPOINT'] + os.environ['ARTIFACTORY_REPO_STORAGE_PATH'] + report_name,
-        data=str.encode(docx),
+        data=docx,
         method='PUT')
     request.add_header('Authorization', f'Basic {encoded_credentials}')
     try:
