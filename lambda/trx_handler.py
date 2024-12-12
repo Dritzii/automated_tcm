@@ -31,7 +31,7 @@ def parse_trx(file_path):
         test_results.append({
             "TestID": result.attrib.get("testId"),
             "testName": result.attrib.get("testName"),
-            "pbiID" : extract_integer(result.attrib.get("testName")),
+            "testcaseID" : extract_integer(result.attrib.get("testName")),
             "Outcome": result.attrib.get("outcome"),
             "Duration": result.attrib.get("duration"),
             "StartTime": result.attrib.get("startTime"),
@@ -46,7 +46,7 @@ def parse_trx(file_path):
         test_definitions.append({
             "ID": definition.attrib.get("id"),
             "Name": name,
-            "HasIntegers": extract_integer(name),  # Extract the integer (if any)
+            "testcaseID": extract_integer(name),  # Extract the integer (if any)
             "Storage": definition.attrib.get("storage"),
             "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find(
                 "TestMethod") is not None else None
