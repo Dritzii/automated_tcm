@@ -4,11 +4,15 @@ import json
 import os
 
 
-def render_docx_template(context):
+def render_docx_template(context) -> bytes:
     from docxtpl import DocxTemplate
     doc = DocxTemplate("/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
     doc.render(context)
-    doc.save("generated_doc.docx")
+    s_buf = io.BytesIO()
+    doc.save(s_buf)
+    s_buf.seek(0)
+    data = s_buf.read()
+    return data
 
 def get_file_contents() -> dict:
     import boto3
