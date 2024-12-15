@@ -1,6 +1,8 @@
 import xml.etree.ElementTree as ET
 import json
 import re
+from zipfile import ZipFile
+
 
 # Function to strip namespaces
 def strip_namespace(root):
@@ -88,3 +90,6 @@ with open(output_path, "w") as json_file:
     json_file.write(json_output)
 
 print("Parsing completed. JSON data saved to:", output_path)
+
+myzip = ZipFile("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/test.zip")
+print(myzip.namelist())

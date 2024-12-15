@@ -2,7 +2,7 @@ import base64
 import io
 import json
 import os
-from io import StringIO
+from io import StringIO, BytesIO
 
 
 def render_docx_template(context) -> bytes:
@@ -22,13 +22,15 @@ def get_file_contents() -> dict:
     file_content = response['Body'].read().decode('utf-8')
     return file_content
 
-def get_zip_from_s3() -> StringIO:
+def get_zip_from_s3() -> BytesIO:
     from zipfile import ZipFile
     import boto3
     s3bucket = boto3.client('s3')
     response = s3bucket.get_object(Bucket=os.environ['s3_bucket'], Key=Key)
-    file_content = response['Body'].read().decode('utf-8')
-    return file_content
+    file_content = response['Body'].read().decode('utf-8') # zip file from s3
+    trx_zip = ZipFile(file_content)
+    trz_unzip = trx_zip.namelist()[0] # we assume the trx only has 1 file in the zip
+    return trx_zip.open(trz_unzip) # unzip the file
 
 def get_file_context(Key="ss_test_run.trx") -> dict:
     import boto3
