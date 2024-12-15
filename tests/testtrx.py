@@ -52,8 +52,11 @@ def parse_trx(file_path):
             "HasIntegers": extract_integer(name),  # Extract the integer (if any)
             "Storage": definition.attrib.get("storage"),
             "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find(
-                "TestMethod") is not None else None
+                "TestMethod") is not None else None,
+           # "TestCategory" : definition.find("TestCategoryItem").attrib.get("TestCategory")
         })
+        #for category in root.findall(".//UnitTest/TestCategory/TestCategoryItem"):
+        #    test_definitions.append({"TestCategory" : [category.attrib.get("TestCategory")]})
 
     # Extract Result Summary
     result_summary_element = root.find(".//ResultSummary")
@@ -70,7 +73,17 @@ def parse_trx(file_path):
     trx_data = {
         "TestResults": test_results,
         "TestDefinitions": test_definitions,
-        "ResultSummary": result_summary
+        "ResultSummary": result_summary,
+        "BackendFunctionalTesting" : [{
+            "ComponentName": "SS",
+            "suiteLink": "N/A",
+            "Status": "Conditional",
+        }],
+        "tcsSummary" : {
+            "PhaseName" : "System Services Functional Testing",
+            "Environment" : "DTS",
+            "Notes" : "System Services components. System Services has no external dependencies."
+        },
     }
 
     return trx_data
