@@ -7,14 +7,14 @@ import urllib.request
 from urllib.error import URLError, HTTPError
 import ssl
 
-from logic_handler import (get_file_context, put_file_contents, datetime_int, render_docx_template)
+from logic_handler import (get_file_context, put_file_contents, datetime_int, render_docx_template, get_zip_from_s3)
 from trx_handler import trx_to_json
 
 def handler(event, context):
     ssl._create_default_https_context = ssl._create_unverified_context
     codepipeline = boto3.client('codepipeline')
     job_id = event['CodePipeline.job']['id']
-    file_content = get_file_context()
+    file_content = get_zip_from_s3()
     trx_dict = trx_to_json(file_content)
     trx_json = json.loads(trx_dict)
     # we should do our calculations and stuff before we render below this

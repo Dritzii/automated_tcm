@@ -22,7 +22,7 @@ def get_file_contents() -> dict:
     file_content = response['Body'].read().decode('utf-8')
     return file_content
 
-def get_zip_from_s3() -> BytesIO:
+def get_zip_from_s3(Key="ss_test_run.zip") -> BytesIO:
     from zipfile import ZipFile
     import boto3
     s3bucket = boto3.client('s3')
