@@ -29,8 +29,8 @@ def get_zip_from_s3(Key="ss_test_run.zip") -> BytesIO:
     response = s3bucket.get_object(Bucket=os.environ['s3_bucket'], Key=Key)
     file_content = response['Body'].read().decode('utf-8') # zip file from s3
     trx_zip = ZipFile(file_content)
-    trz_unzip = trx_zip.namelist()[0] # we assume the trx only has 1 file in the zip
-    return trx_zip.open(trz_unzip) # unzip the file
+     # we assume the trx only has 1 file in the zip
+    return trx_zip.open(trx_zip.namelist()[0]) # unzip the file
 
 def get_file_context(Key="ss_test_run.trx") -> dict:
     import boto3
