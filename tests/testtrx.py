@@ -53,10 +53,8 @@ def parse_trx(file_path):
             "Storage": definition.attrib.get("storage"),
             "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find(
                 "TestMethod") is not None else None,
-           # "TestCategory" : definition.find("TestCategoryItem").attrib.get("TestCategory")
+            "TestCategory" : [{"TestCategory" : test_value.attrib.get("TestCategory") } for test_value in definition.findall(".//TestCategory/TestCategoryItem")]
         })
-        #for category in root.findall(".//UnitTest/TestCategory/TestCategoryItem"):
-        #    test_definitions.append({"TestCategory" : [category.attrib.get("TestCategory")]})
 
     # Extract Result Summary
     result_summary_element = root.find(".//ResultSummary")
