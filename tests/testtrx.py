@@ -3,6 +3,8 @@ import json
 import re
 from zipfile import ZipFile
 
+from docxtpl import DocxTemplate
+
 
 # Function to strip namespaces
 def strip_namespace(root):
@@ -13,13 +15,8 @@ def strip_namespace(root):
     return root
 
 def extract_integer(name):
-    """Extracts the first integer from a string if it has 5-7 digits, returns None otherwise."""
-    match = re.search(r'\d+', name)  # Find the first sequence of digits
-    if match:
-        number = int(match.group())
-        if 10000 <= number <= 9999999:  # Ensure it's between 5 and 7 digits
-            return number
-    return None
+    match = re.findall(r'\d+', name)
+    return int(max(match))
 
 # Function to parse the .trx file
 def parse_trx(file_path):
@@ -35,6 +32,8 @@ def parse_trx(file_path):
     for result in root.findall(".//UnitTestResult"):
         test_results.append({
             "TestID": result.attrib.get("testId"),
+            "testName": result.attrib.get("testName"),
+            "testcaseID" : extract_integer(result.attrib.get("testName")),
             "Outcome": result.attrib.get("outcome"),
             "Duration": result.attrib.get("duration"),
             "StartTime": result.attrib.get("startTime"),
@@ -72,16 +71,16 @@ def parse_trx(file_path):
         "TestResults": test_results,
         "TestDefinitions": test_definitions,
         "ResultSummary": result_summary,
-        "BackendFunctionalTesting" : [{
+        "BackendFunctionalTesting": [{
             "ComponentName": "SS",
             "suiteLink": "N/A",
             "Status": "Conditional",
         }],
-        "tcsSummary" : {
-            "PhaseName" : "System Services Functional Testing",
-            "Environment" : "DTS",
-            "Notes" : "System Services components. System Services has no external dependencies."
-        },
+        "tcsSummary": [{
+            "PhaseName": "System Services Functional Testing",
+            "Environment": "DTS",
+            "Notes": "System Services components. System Services has no external dependencies."
+        }],
     }
 
     return trx_data
@@ -101,3 +100,7 @@ with open(output_path, "w") as json_file:
     json_file.write(json_output)
 
 print("Parsing completed. JSON data saved to:", output_path)
+doc = DocxTemplate("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/templates/test.docx")
+
+doc.render(json.loads(json_output))
+doc.save("/mnt/49bb6cd3-a5bf-468d-b67a-f4dd29190808/GIT/automated_tcm/lambda/doc.docx")

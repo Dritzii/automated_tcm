@@ -49,7 +49,9 @@ def parse_trx(file_path):
             "testcaseID": extract_integer(name),  # Extract the integer (if any)
             "Storage": definition.attrib.get("storage"),
             "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find(
-                "TestMethod") is not None else None
+                "TestMethod") is not None else None,
+            "TestCategory": [test_value.attrib.get("TestCategory") for test_value in
+                             definition.findall(".//TestCategory/TestCategoryItem")]
         })
 
     # Extract Result Summary
@@ -73,11 +75,11 @@ def parse_trx(file_path):
             "suiteLink": "N/A",
             "Status": "Conditional",
         },
-        "tcsSummary" : {
+        "tcsSummary" : [{
             "PhaseName" : "System Services Functional Testing",
             "Environment" : "DTS",
             "Notes" : "System Services components. System Services has no external dependencies."
-        },
+        }],
     }
 
     return trx_data
