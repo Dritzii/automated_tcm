@@ -13,28 +13,12 @@ Parameters:
     Default: arn:aws:iam::830486629506:role/ato-role-dis-testiac-lambda
   admincbrole:
     Type: String
-  jinja:
-    Type: String
-    Default: jinja.zip
-  matplotlib:
-    Type: String
-    Default: matplotlib.zip
-  docplx:
-    Type: String
-    Default: docplx.zip
   s3bucketnamereports:
     Type: String
     Default: ato-dis-infra-build-pipeline-outputs-devtest
   lambdazip:
     Type: String
     Default: approval.zip
-  subnetlist:
-    Type: String
-    Default: "['subnet-0fb54d79' , 'subnet-0c03b384cc7d98682']"
-  vpc6bcfd80e:
-    Type: String
-  sg0932df5016b614b95:
-    Type: String
 Resources:
   atodisgeneratereport67672E44:
     Type: AWS::Lambda::Function
@@ -127,7 +111,7 @@ Resources:
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Analytics: v2:deflate64:H4sIAAAAAAAA/02MzQqDMBCEn8V73FZFelfoWewDlDXZ0q2aSH4oJeTd26qFnuZjhvlKKOoajhk+XS7VmE88QLx4lKNob7pDizN5suKzX6OroAlyJN+gIzHhPCiEeA5aejb6e/hxEtIoWnihiTVB7HZapTunJHpyJli51v/cGq1483Qvfzf6UEFRwil7OObcBu15Jui3fAPQ9xXlwwAAAA==
+      Analytics: v2:deflate64:H4sIAAAAAAAA/02MawqDMBCEz+L/uH2IF1Dob7EHKGuypVt1I3lQSvDutWqhMDAfM8yc4VSWcMzw5XNt+nzgDtI1oO5VfZcGHY4UyKmlvyVfQBV1T6FCT2rAsTMI6RJFB7byHfx4VtoamniigYUgNTutpzvPs2rJ2+j0Gv9zbcXw9tO8w8PKoYDTouzpmXMXJfBI0G7+AXfIwRbDAAAA
     Metadata:
       aws:cdk:path: AutomatedTcmStack/CDKMetadata/Default
     Condition: CDKMetadataAvailable

@@ -30,18 +30,18 @@ class AutomatedTcmStack(Stack):
                                            mutable=False)
         admin_role = CfnParameter(self, "admin_cb_role")
         admin_role_arn = Role.from_role_arn(self, "ato-dis-cp-role", admin_role.value_as_string, mutable=False)
-        jinja = CfnParameter(self, "jinja", default="jinja.zip")
-        matplotlib = CfnParameter(self, "matplotlib", default="matplotlib.zip")
-        docplx = CfnParameter(self, "docplx", default="docplx.zip")
+        #jinja = CfnParameter(self, "jinja", default="jinja.zip")
+        #matplotlib = CfnParameter(self, "matplotlib", default="matplotlib.zip")
+        #docplx = CfnParameter(self, "docplx", default="docplx.zip")
         s3_bucket_location_reports = CfnParameter(self, "s3bucket_name_reports",
                                                   default="ato-dis-infra-build-pipeline-outputs-devtest")
         zip_code = CfnParameter(self, "lambdazip", default="approval.zip")
-        subnet = CfnParameter(self, "subnet_list", default="['subnet-0fb54d79' , 'subnet-0c03b384cc7d98682']")
-        vpcid = CfnParameter(self, 'vpc-6bcfd80e')
-        canarysg = CfnParameter(self, 'sg-0932df5016b614b95')
-        SGobj = [aws_ec2.SecurityGroup.from_security_group_id(self, 'sg', security_group_id=canarysg.value_as_string)]
-        Vpcobj = aws_ec2.Vpc.from_vpc_attributes(self, 'vpc', availability_zones=['ap-southeast-2a', 'ap-southeast-2b'],
-                                                 vpc_id=vpcid.value_as_string)
+        #subnet = CfnParameter(self, "subnet_list", default="['subnet-0fb54d79' , 'subnet-0c03b384cc7d98682']")
+        #vpcid = CfnParameter(self, 'vpc-6bcfd80e')
+        #canarysg = CfnParameter(self, 'sg-0932df5016b614b95')
+        #SGobj = [aws_ec2.SecurityGroup.from_security_group_id(self, 'sg', security_group_id=canarysg.value_as_string)]
+        #Vpcobj = aws_ec2.Vpc.from_vpc_attributes(self, 'vpc', availability_zones=['ap-southeast-2a', 'ap-southeast-2b'],
+        #                                         vpc_id=vpcid.value_as_string)
         """Subnetobj = aws_ec2.SubnetSelection(subnets=[aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet0",
                                                                                    subnet.value_as_string.split()[0]),
                                                       aws_ec2.Subnet.from_subnet_id(self, "lambda-subnet1",
