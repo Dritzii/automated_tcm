@@ -22,13 +22,13 @@ def get_file_contents() -> dict:
     file_content = response['Body'].read().decode('utf-8')
     return file_content
 
-def get_zip_from_s3(Key="ss_test_run.zip") -> BytesIO:
+def get_zip_from_s3(Key="vssln.zip") -> BytesIO:
     from zipfile import ZipFile
     import boto3
     s3bucket = boto3.client('s3')
     response = s3bucket.get_object(Bucket=os.environ['s3_bucket'], Key=Key)
-    file_content = response['Body'].read().decode('utf-8') # zip file from s3
-    trx_zip = ZipFile(file_content)
+    file_content = response.get('Body').read()
+    trx_zip = ZipFile(BytesIO(file_content))
      # we assume the trx only has 1 file in the zip
     return trx_zip.open(trx_zip.namelist()[0]) # unzip the file
 
@@ -36,6 +36,7 @@ def get_file_context(Key="ss_test_run.trx") -> dict:
     import boto3
     s3bucket = boto3.client('s3')
     response = s3bucket.get_object(Bucket=os.environ['s3_bucket'], Key=Key)
+    print(response)
     file_content = response['Body'].read().decode('utf-8')
     return file_content
 
