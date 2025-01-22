@@ -7,7 +7,7 @@ from io import StringIO, BytesIO
 
 def render_docx_template(context) -> bytes:
     from docxtpl import DocxTemplate
-    doc = DocxTemplate("/templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
+    doc = DocxTemplate("templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
     doc.render(context)
     s_buf = io.BytesIO()
     doc.save(s_buf)
@@ -49,6 +49,6 @@ def datetime_int() -> int:
     return a
 
 def put_file_contents(buff: str, Key: str):
+    import boto3
     s3bucket = boto3.client('s3')
     s3bucket.put_object(Body=buff, Bucket=os.environ['s3_bucket_reports'], Key=Key)
-
