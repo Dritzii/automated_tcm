@@ -22,8 +22,8 @@ class AutomatedTcmStack(Stack):
 
         s3_bucket_location = CfnParameter(self, "s3bucket_name", default="ato-dis-infra-build-pipeline-outputs-devtest")
         source_bucket = s3.Bucket.from_bucket_name(self, 'test-pipeline-src-bucket', s3_bucket_location.value_as_string)
-        s2_bucket_location = CfnParameter(self, "s3bucket_name", default="lambda_deploy s3 bucket")
-        source1_bucket = s3.Bucket.from_bucket_name(self, 'deployment lambda s3', s2_bucket_location.value_as_string)
+        s2_bucket_location = CfnParameter(self, "s3bucket_name1", default="lambda_deploy s3 bucket")
+        source1_bucket = s3.Bucket.from_bucket_name(self, 'deployment lambda s31', s2_bucket_location.value_as_string)
         bucket_key_param = CfnParameter(self, "vssln.zip", default="vssln.zip")
         kms_alias = CfnParameter(self, "kms_alias", default="alias/KMS-DIS-DockerImageBuilder")
         existing_role_arn = CfnParameter(self, "lambda_role",
