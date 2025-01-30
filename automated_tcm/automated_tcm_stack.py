@@ -22,6 +22,8 @@ class AutomatedTcmStack(Stack):
 
         s3_bucket_location = CfnParameter(self, "s3bucket_name", default="ato-dis-infra-build-pipeline-outputs-devtest")
         source_bucket = s3.Bucket.from_bucket_name(self, 'test-pipeline-src-bucket', s3_bucket_location.value_as_string)
+        s2_bucket_location = CfnParameter(self, "s3bucket_name", default="lambda_deploy s3 bucket")
+        source1_bucket = s3.Bucket.from_bucket_name(self, 'deployment lambda s3', s2_bucket_location.value_as_string)
         bucket_key_param = CfnParameter(self, "vssln.zip", default="vssln.zip")
         kms_alias = CfnParameter(self, "kms_alias", default="alias/KMS-DIS-DockerImageBuilder")
         existing_role_arn = CfnParameter(self, "lambda_role",
@@ -52,6 +54,9 @@ class AutomatedTcmStack(Stack):
                                                       encryption_key=kms.Alias.from_alias_name(self,
                                                                                                id='kms-key-s3bucket',
                                                                                                alias_name=kms_alias.value_as_string))
+        deployment_bucket = s3.Bucket.from_bucket_attributes(self,
+                                                      id="ato-dis-deployment-bucket",
+                                                      bucket_name=source1_bucket.bucket_name)
         # Layers
         #self.jinja_layer = _lambda.LayerVersion(self, "DIS-jinjaLayer",
         #                                        code=_lambda.Code.from_bucket(bucket=kms_bucket,
@@ -79,7 +84,7 @@ class AutomatedTcmStack(Stack):
         TestFrameworkLambda_generate_html = _lambda.Function(self, "ato-dis-generate_report",
                                                              runtime=_lambda.Runtime.PYTHON_3_11,
                                                              handler="report_handler.handler",
-                                                             code=_lambda.Code.from_bucket(bucket=kms_bucket,
+                                                             code=_lambda.Code.from_bucket(bucket=deployment_bucket,
                                                                                            key=zip_code.value_as_string),
                                                              environment={
                                                                  "s3_bucket": s3_bucket_location.value_as_string,
