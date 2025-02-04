@@ -17,7 +17,6 @@ def extract_integer(name):
 
 # Function to parse the .trx file
 def parse_trx(file_path):
-    rt = RichText()
     # Parse the XML content
     tree = ET.parse(file_path)
     root = tree.getroot()
@@ -65,11 +64,11 @@ def parse_trx(file_path):
     else:
         result_summary = None
     # Convert the second list into a dictionary for quick lookup
-    testdlookup = {d["id"]: d for d in test_definitions}
+    test_joins = {d["id"]: d for d in test_definitions}
 
     # Merge lists based on matching "id"
     test_with_same_id = [
-        {**d, **testdlookup[d["id"]]} if d["id"] in testdlookup else d
+        {**d, **test_joins[d["id"]]} if d["id"] in test_joins else d
         for d in test_results
     ]
     # Construct final JSON structure

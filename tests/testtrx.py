@@ -1,7 +1,6 @@
-import xml.etree.ElementTree as ET
 import json
 import re
-from zipfile import ZipFile
+import xml.etree.ElementTree as ET
 
 from docxtpl import DocxTemplate
 
@@ -33,7 +32,7 @@ def parse_trx(file_path):
         test_results.append({
             "TestID": result.attrib.get("testId"),
             "testName": result.attrib.get("testName"),
-            "testcaseID" : extract_integer(result.attrib.get("testName")),
+            "testcaseID": extract_integer(result.attrib.get("testName")),
             "Outcome": result.attrib.get("outcome"),
             "Duration": result.attrib.get("duration"),
             "StartTime": result.attrib.get("startTime"),
@@ -48,11 +47,12 @@ def parse_trx(file_path):
         test_definitions.append({
             "ID": definition.attrib.get("id"),
             "Name": name,
-            "HasIntegers": extract_integer(name),  # Extract the integer (if any)
+            "testcaseID": extract_integer(name),  # Extract the integer (if any)
             "Storage": definition.attrib.get("storage"),
             "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find(
                 "TestMethod") is not None else None,
-            "TestCategory" : [test_value.attrib.get("TestCategory") for test_value in definition.findall(".//TestCategory/TestCategoryItem")]
+            "TestCategory": [test_value.attrib.get("TestCategory") for test_value in
+                             definition.findall(".//TestCategory/TestCategoryItem")]
         })
 
     # Extract Result Summary
@@ -65,12 +65,20 @@ def parse_trx(file_path):
         }
     else:
         result_summary = None
+    # Convert the second list into a dictionary for quick lookup
+    test_joins = {d["testcaseID"]: d for d in test_definitions}
 
+    # Merge lists based on matching "id"
+    test_with_same_id = [
+        {**d, **test_joins[d["testcaseID"]]} if d["testcaseID"] in test_joins else d
+        for d in test_results
+    ]
     # Construct final JSON structure
     trx_data = {
         "TestResults": test_results,
         "TestDefinitions": test_definitions,
         "ResultSummary": result_summary,
+        "test_with_same_id": test_with_same_id,
         "BackendFunctionalTesting": [{
             "ComponentName": "SS",
             "suiteLink": "N/A",
