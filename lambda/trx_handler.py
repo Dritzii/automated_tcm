@@ -70,11 +70,11 @@ def parse_trx(file_path):
         "TestResults": test_results,
         "TestDefinitions": test_definitions,
         "ResultSummary": result_summary,
-        "BackendFunctionalTesting" : {
+        "BackendFunctionalTesting" : [{
             "ComponentName": "SS",
-            "suiteLink": "N/A",
+            "suiteLink": "No suite Link",
             "Status": "Conditional",
-        },
+        }],
         "tcsSummary" : [{
             "PhaseName" : "System Services Functional Testing",
             "Environment" : "DTS",
