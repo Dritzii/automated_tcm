@@ -72,7 +72,7 @@ def parse_trx(file_path):
         "ResultSummary": result_summary,
         "BackendFunctionalTesting" : [{
             "ComponentName": "SS",
-            "suiteLink": "No suite Link",
+            "suiteLink": "N/A",
             "Status": "Conditional",
         }],
         "tcsSummary" : [{
