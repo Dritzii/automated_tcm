@@ -43,8 +43,8 @@ def parse_trx(file_path):
     for definition in root.findall(".//UnitTest"):
         name = definition.attrib.get("name")
         test_definitions.append({
-            "ID": definition.attrib.get("id"),
-            "Name": name,
+            "TestID": definition.attrib.get("id"),
+            "testName": name,
             "testcaseID": extract_integer(name),  # Extract the integer (if any)
             "Storage": definition.attrib.get("storage"),
             "ClassName": definition.find("TestMethod").attrib.get("className") if definition.find(
