@@ -64,12 +64,20 @@ def parse_trx(file_path):
         }
     else:
         result_summary = None
+    # Convert the second list into a dictionary for quick lookup
+    testdlookup = {d["id"]: d for d in test_definitions}
 
+    # Merge lists based on matching "id"
+    test_with_same_id = [
+        {**d, **testdlookup[d["id"]]} if d["id"] in testdlookup else d
+        for d in test_results
+    ]
     # Construct final JSON structure
     trx_data = {
         "TestResults": test_results,
         "TestDefinitions": test_definitions,
         "ResultSummary": result_summary,
+        "test_with_same_id" : test_with_same_id,
         "BackendFunctionalTesting" : [{
             "ComponentName": "SS",
             "suiteLink": "N/A",
