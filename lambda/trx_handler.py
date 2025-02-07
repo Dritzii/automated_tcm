@@ -77,6 +77,7 @@ def parse_trx(file_path):
         "TestDefinitions": test_definitions,
         "ResultSummary": result_summary,
         "TestRandD": test_with_same_id,
+        "finaltcm" : True,
         "BackendFunctionalTesting": [{
             "ComponentName": "SS",
             "suiteLink": "N/A",
