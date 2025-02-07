@@ -7,7 +7,7 @@ from io import StringIO, BytesIO
 
 def render_docx_template(context) -> bytes:
     from docxtpl import DocxTemplate
-    doc = DocxTemplate("templates/myID_FT&PT_TCM_{Release}_{Year}.docx")
+    doc = DocxTemplate("templates/myID_FT&PT_TCM_{Release}_{Year} (2).docx")
     doc.render(context)
     s_buf = io.BytesIO()
     doc.save(s_buf)
